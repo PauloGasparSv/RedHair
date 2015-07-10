@@ -11,7 +11,7 @@ public class GameStateManager {
 		
 	public GameStateManager(int currentState){
 		this.currentState = currentState;
-		state = new Test();
+		
 	}
 	public void update(float delta,OrthographicCamera camera){
 		state.update(delta,camera);
