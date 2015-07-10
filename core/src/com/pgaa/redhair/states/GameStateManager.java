@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameStateManager {
-	public static final int TEST = 0, MENU = 1, CREDITS = 100;
+	public static final int TEST = 1, MENU = 0, CREDITS = -1;
 	
 	private State state;
 	private int currentState;
