@@ -43,53 +43,53 @@ public class Player {
 		TextureRegion temp [] = new TextureRegion[6];
 		for(int i=0; i<6; i++)
 			temp[i] = new TextureRegion(temp_img,40*i,704,40,87);
-		animation[0][LEFT] = new Animation(temp,500);
+		animation[0][LEFT] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE RIGTH CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,704,40,87);
 			temp[i].flip(true,false);
 		}
-		animation[0][RIGHT] = new Animation(temp,500);
+		animation[0][RIGHT] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE UP CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*5,40,87);
 			temp[i].flip(true,false);
 		}
-		animation[0][UP] = new Animation(temp,500);
+		animation[0][UP] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE DOWN CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*6,40,88);
 		}
-		animation[0][DOWN] = new Animation(temp,500);
+		animation[0][DOWN] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE DOWNLEFT CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*7,40,88);
 		}
-		animation[0][DOWNLEFT] = new Animation(temp,500);
+		animation[0][DOWNLEFT] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE UPLEFT CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*9,40,88);
 		}
-		animation[0][UPLEFT] = new Animation(temp,500);
+		animation[0][UPLEFT] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE DOWNRIGHT CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*7,40,88);
 			temp[i].flip(true,false);
 		}
-		animation[0][DOWNRIGHT] = new Animation(temp,500);
+		animation[0][DOWNRIGHT] = new Animation(temp,350);
 		//LOADING THE WALKING TO THE UPRIGHT CYCLE
 		temp = new TextureRegion[6];
 		for(int i=0; i<6; i++){
 			temp[i] = new TextureRegion(temp_img,40*i,88*9,40,88);
 			temp[i].flip(true,false);
 		}
-		animation[0][UPRIGHT] = new Animation(temp,500);
+		animation[0][UPRIGHT] = new Animation(temp,350);
 		
 		init();
 	}
@@ -102,9 +102,9 @@ public class Player {
 		facing = RIGHT;
 		position = new int[2];
 		destination = new Rectangle(-1, -1, 15, 20);
-		myHitArea = new Rectangle(position[0],position[1],80,55);
+		myHitArea = new Rectangle(position[0],position[1],140,50);
 		mousePosition = new int[2];
-		position[0] = 50;
+		position[0] = 500;
 		position[1] = 50;
 		
 		mousePosition[0] = 0;
@@ -122,11 +122,12 @@ public class Player {
 			mousePress = false;
 		}
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT) && !mousePress){
-			int x = Gdx.input.getX()+(int)camera.position.x-400-(int)destination.width/2;
+			speed[1] = 0;
+			int x = Gdx.input.getX()+(int)camera.position.x-380-(int)destination.width/2;
 			int y = 300-Gdx.input.getY()+(int)camera.position.y-(int)destination.height;
 			if(canWalk(x, y,rects)){
 				action = WALK;
-				if(x > position[0]+myHitArea.width+40){
+				if(x > position[0]+myHitArea.width){
 					if(y >= position[1]+myHitArea.height-myHitArea.height/10){
 						facing = UPRIGHT;
 						destination.x = x;
@@ -146,7 +147,7 @@ public class Player {
 						speed[1] = 0;
 					}
 				}
-				else if(x < position[0]-40){
+				else if(x < position[0]){
 					if(y >= position[1]+myHitArea.height-myHitArea.height/10){
 						facing = UPLEFT;
 						destination.x = x;
@@ -170,12 +171,13 @@ public class Player {
 					if(y < myHitArea.y){
 						facing = DOWN;
 						speed[1] = -speed[0];
+						destination.y = y;
 					}
 					else{
 						facing = UP;
 						speed[1] = speed[0];
+						destination.y = y+50;
 					}
-					destination.y = y;
 					destination.x = position[0];
 				}
 				animation[action][facing].resume();
@@ -219,12 +221,19 @@ public class Player {
 		return ok;
 		
 	}
-
+	
+	public int getX(){
+		return position[0];
+	}
+	public int getY(){
+		return position[1];
+	}
+	
 	public void draw(SpriteBatch batch) {
 		if(action!=IDLE)
-			batch.draw(animation[action][facing].getFrame(),position[0],position[1],80,176);
+			batch.draw(animation[action][facing].getFrame(),position[0],position[1],120,264);
 		else
-			batch.draw(image_idle[facing],position[0],position[1],80,176);
+			batch.draw(image_idle[facing],position[0],position[1],120,264);
 	}
 
 }

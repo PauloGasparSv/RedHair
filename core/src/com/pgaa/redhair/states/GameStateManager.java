@@ -2,7 +2,6 @@ package com.pgaa.redhair.states;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.pgaa.redhair.actors.Player;
 
 public class GameStateManager {
 	public static final int TEST = 0, MENU = 1, CREDITS = 100;
@@ -17,8 +16,8 @@ public class GameStateManager {
 	public void update(float delta,OrthographicCamera camera){
 		state.update(delta,camera);
 	}
-	public void draw(SpriteBatch batch){
-		state.draw(batch);
+	public void draw(SpriteBatch batch,OrthographicCamera camera){
+		state.draw(batch,camera);
 	}
 	
 	
