@@ -20,6 +20,7 @@ public class MyGame extends ApplicationAdapter {
 		camera.translate(0,0);
 		s = new ShapeRenderer();
 		Gdx.input.setCursorCatched(true);
+		Gdx.input.setCursorPosition(-100, -200);
 		
 		
 		

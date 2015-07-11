@@ -145,13 +145,13 @@ public class HouseState implements State{
 				if(lookingAt.equals("rock"))
 					message = "A pile of rocks. What happened?";
 				if(lookingAt.equals("window1")||lookingAt.equals("window2"))
-					message = "It is so dark... I can see my piece of shit car.";
+					message = "Its dark outside... I can see my piece of shit car.";
 				if(lookingAt.equals("rock"))
 					message = "A pile of rocks. What happened?";
 				if(lookingAt.equals("lamp"))
-					message = "It is a lamp... Why did you click it?";
+					message = "It is a lamp... Why the fuck did you click it?";
 				if(lookingAt.equals("window3"))
-					message = "Can't see anything, too dark.";
+					message = "Can't see anything outside, too dark.";
 				textTimer = 500;
 			}
 			mPress = true;
@@ -167,7 +167,7 @@ public class HouseState implements State{
 		}
 		mousePosition.x = Gdx.input.getX()+camera.position.x-400-6;
 		mousePosition.y = 600-Gdx.input.getY()+camera.position.y-300-32;
-		
+		System.out.println(camera.position.y);
 	}
 
 	@Override
