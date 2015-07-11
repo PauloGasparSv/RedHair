@@ -8,7 +8,7 @@ public class Player implements Actor{
 	private Vector2 position;	
 	
 	public Player(){
-		//LOADING IMAGES
+		
 		
 		
 	}

@@ -5,17 +5,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pgaa.redhair.states.GameStateManager;
 
 public class MyGame extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private GameStateManager gsm;
 	private OrthographicCamera camera;
+	ShapeRenderer s;
 	public void create () {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager(GameStateManager.TEST);
 		camera = new OrthographicCamera(800,600);
 		camera.translate(0,0);
+		s = new ShapeRenderer();
+		Gdx.input.setCursorCatched(true);
+		
+		
 		
 	}
 	public void render () {
@@ -28,6 +34,10 @@ public class MyGame extends ApplicationAdapter {
 		batch.begin();
 		gsm.draw(batch,camera);
 		batch.end();
+		
+		//s.setProjectionMatrix(camera.combined);
+		//s.begin(ShapeType.Filled);
+		//s.end();
 		
 		
 	}

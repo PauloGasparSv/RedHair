@@ -8,13 +8,13 @@ public class GameStateManager {
 	public static final int TEST = 1, MENU = 0, CREDITS = -1;
 	
 	private State state;
-	private int currentState;
+	//private int currentState;
 	
 	private Player player;
 		
 	public GameStateManager(int currentState){
 		player = new Player();
-		this.currentState = currentState;
+		//this.currentState = currentState;
 		this.state = new HouseState(player);
 	}
 	public void update(float delta,OrthographicCamera camera){
