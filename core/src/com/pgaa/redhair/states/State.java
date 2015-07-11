@@ -7,7 +7,5 @@ import com.badlogic.gdx.math.Rectangle;
 public interface State {
 	public void init();
 	public void update(float delta,OrthographicCamera camera);
-	public void draw(SpriteBatch batch,OrthographicCamera camera);
-	public int getSize();
-	public Rectangle[] getRects();
+	public void draw(SpriteBatch batch);
 }
