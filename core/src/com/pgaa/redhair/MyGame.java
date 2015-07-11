@@ -20,10 +20,7 @@ public class MyGame extends ApplicationAdapter {
 		camera.translate(0,0);
 		s = new ShapeRenderer();
 		Gdx.input.setCursorCatched(true);
-		Gdx.input.setCursorPosition(-100, -200);
-		
-		
-		
+		Gdx.input.setCursorPosition(200, 200);
 	}
 	public void render () {
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.6f, 1);

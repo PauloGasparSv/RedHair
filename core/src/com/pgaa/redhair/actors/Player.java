@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.pgaa.redhair.tools.Animation;
 
@@ -14,6 +15,8 @@ public class Player implements Actor{
 	private int action;
 	private int direction;
 	private Vector2 position;	
+	private Vector2 destination;
+	private Vector2 speed;
 	private TextureRegion idle[];
 	private Animation walk[];
 	
@@ -77,16 +80,25 @@ public class Player implements Actor{
 		init();
 	}
 	public void init(){
-		action = WALK;
-		direction = LEFT;
+		action = IDLE;
+		direction = RIGHT;
 		position = new Vector2(60,-160);
-		
-		walk[direction].play();
+		destination = null;
+		speed = new Vector2(0,0);
 		
 	}
 	public void update(float delta,OrthographicCamera camera){
 		if(action == WALK){
 			walk[direction].update(delta);
+			position.x += speed.x*delta;
+			position.y += speed.y*delta;
+			if(new Rectangle(position.x,position.y,80,40).overlaps(new Rectangle(destination.x,destination.y,80,40))){
+				walk[direction].stop();
+				action = IDLE;
+				destination = null;
+				System.out.println("Got there");
+			}
+		
 		}
 		
 	}
@@ -95,7 +107,89 @@ public class Player implements Actor{
 			batch.draw(idle[direction],position.x,position.y,80,172);
 		else
 			batch.draw(walk[direction].getFrame(),position.x,position.y,80,172);
+	}
+	
+	public void walkTo(Vector2 destination){
+		if(new Rectangle(position.x,position.y,40,40).overlaps(new Rectangle(destination.x,destination.y,32,32))){
+			System.out.println("NOPE");
+			return;
+		}
+		else if(new Rectangle(position.x,position.y+40,80,600).overlaps(new Rectangle(destination.x,destination.y,32,32))){
+			//GOES UP
+			walk[direction].stop();
+			direction = UP;
+			walk[direction].play();
+			speed.x = 0;
+			speed.y = 100;
+			this.destination = new Vector2(destination.x,destination.y+40);
+
+		}
+		else if(new Rectangle(position.x,position.y-600,80,600).overlaps(new Rectangle(destination.x,destination.y,32,32))){
+			//GOES DOWN
+			walk[direction].stop();
+			direction = DOWN;
+			walk[direction].play();
+			speed.x = 0;
+			speed.y = -100;
+			this.destination = new Vector2(destination.x,destination.y-10);
+		}
+		else if(new Rectangle(position.x-800,position.y,800,40).overlaps(new Rectangle(destination.x,destination.y,32,32))){
+			//GOES LEFT
+			walk[direction].stop();
+			direction = LEFT;
+			walk[direction].play();
+			speed.x = -100;
+			speed.y = 0;
+			this.destination = new Vector2(destination.x-80,destination.y);
+		}
+		else if(new Rectangle(position.x+40,position.y,800,40).overlaps(new Rectangle(destination.x,destination.y,32,32))){
+			//GOES RIGHT
+			walk[direction].stop();
+			direction = RIGHT;
+			walk[direction].play();
+			speed.x = 100;
+			speed.y = 0;
+			this.destination = new Vector2(destination.x,destination.y);
+		}
+		else{
+			if(destination.x>position.x){
+				speed.x = 100;
+				if(destination.y>position.y){
+					walk[direction].stop();
+					direction = UPRIGHT;
+					walk[direction].play();
+					speed.y = (destination.y-position.y)*speed.x/(destination.x-position.x);
+					this.destination = new Vector2(destination.x,destination.y+40);
+				}
+				else{
+					walk[direction].stop();
+					direction = DOWNRIGHT;
+					walk[direction].play();
+					speed.y = (destination.y-position.y)*speed.x/(destination.x-position.x);
+					this.destination = new Vector2(destination.x,destination.y-20);
+				}
+			}
+			else{
+				speed.x = -100;
+				if(destination.y>position.y){
+					walk[direction].stop();
+					direction = UPLEFT;
+					walk[direction].play();
+					speed.y = (destination.y-position.y)*speed.x/(destination.x-position.x);
+					this.destination = new Vector2(destination.x,destination.y+40);
+				}
+				else{
+					walk[direction].stop();
+					direction = DOWNLEFT;
+					walk[direction].play();
+					speed.y = (destination.y-position.y)*speed.x/(destination.x-position.x);
+					this.destination = new Vector2(destination.x,destination.y-20);
+				}
+			}
+			
+		}
 		
+		action = WALK;
 	}
 	
 	

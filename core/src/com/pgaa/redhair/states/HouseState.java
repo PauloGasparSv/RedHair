@@ -2,7 +2,6 @@ package com.pgaa.redhair.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,6 +24,7 @@ public class HouseState implements State{
 	private TextureRegion cursor[][];
 	private int cursorState;
 	private boolean mPress;
+	private boolean wPress;
 	private String lookingAt;
 	private Vector2 mousePosition;
 	
@@ -60,7 +60,7 @@ public class HouseState implements State{
 	@Override
 	public void init() {
 		walking_areas = new Rectangle[2][1];
-		walking_areas[0][0] = new Rectangle(-65,-208,757,81);
+		walking_areas[0][0] = new Rectangle(-65,-238,757,81);
 		walking_areas[1][0] = new Rectangle(-291,-208,490,81);
 		object_names = new String[2][];
 		object_names[0] = new String[9];
@@ -100,6 +100,7 @@ public class HouseState implements State{
 		currentRoom = 0;
 		cursorState = 0;
 		mPress = false;
+		wPress = false;
 		
 		mousePosition = new Vector2(0, 0);
 		textPos = new Vector2(0,0);
@@ -112,11 +113,19 @@ public class HouseState implements State{
 	@Override
 	public void update(float delta, OrthographicCamera camera) {
 		player.update(delta, camera);
+		System.out.println(player.getPosition().x-camera.position.x);
+		if(player.getPosition().x-camera.position.x > 100)
+			camera.translate(100*delta, 0);
+		if(player.getPosition().x-camera.position.x < -100)
+			camera.translate(-100*delta, 0);
+		
 		
 		if(Gdx.input.isKeyPressed(Input.Keys.D))
 			camera.translate(delta*300, 0);
 		if(Gdx.input.isKeyPressed(Input.Keys.A))
 			camera.translate(-delta*300, 0);
+		mousePosition.x = Gdx.input.getX()+camera.position.x-400-6;
+		mousePosition.y = 600-Gdx.input.getY()+camera.position.y-300-32;
 		
 		//RESTRAINING CAMERA
 		if(camera.position.x<0)
@@ -130,10 +139,13 @@ public class HouseState implements State{
 		lookingAt = null;
 		for(int obj = 0; obj < objasize; obj++){
 			if(object_areas[currentRoom][obj].overlaps(new Rectangle(mousePosition.x,mousePosition.y,32,32))){
+				double distance = Math.sqrt(Math.pow(object_areas[currentRoom][obj].x - player.getPosition().x,2)+Math.pow(object_areas[currentRoom][obj].y - player.getPosition().y,2));
 				String temp = object_names[currentRoom][obj];
-				if(temp.equals("rock")||temp.contains("window")||temp.equals("hole")||temp.equals("door2")||temp.equals("lamp")||temp.equals("")){
-					cursorState = EXAMINE;
-					lookingAt = temp;
+				if(distance<=260 || temp.equals("rock")){
+					if(temp.equals("rock")||temp.contains("window")||temp.equals("hole")||temp.equals("door2")||temp.equals("lamp")||temp.equals("")){
+						cursorState = EXAMINE;
+						lookingAt = temp;
+					}
 				}
 			}
 		}
@@ -152,6 +164,8 @@ public class HouseState implements State{
 					message = "It is a lamp... Why the fuck did you click it?";
 				if(lookingAt.equals("window3"))
 					message = "Can't see anything outside, too dark.";
+				if(lookingAt.equals("door2"))
+					message = "It's locked... The keyhole is shaped like a flower.";
 				textTimer = 500;
 			}
 			mPress = true;
@@ -165,9 +179,17 @@ public class HouseState implements State{
 				message = null;
 			}
 		}
-		mousePosition.x = Gdx.input.getX()+camera.position.x-400-6;
-		mousePosition.y = 600-Gdx.input.getY()+camera.position.y-300-32;
-		System.out.println(camera.position.y);
+		if(!Gdx.input.isButtonPressed(Input.Buttons.RIGHT) && wPress)
+			wPress = false;
+		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT) && !wPress){
+			for(Rectangle area:walking_areas[currentRoom]){
+				if(area.overlaps(new Rectangle(mousePosition.x,mousePosition.y,2,2))){
+					player.walkTo(mousePosition);
+				}
+			}
+			wPress = true;
+		}
+	
 	}
 
 	@Override
