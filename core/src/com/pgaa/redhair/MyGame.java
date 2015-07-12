@@ -23,7 +23,7 @@ public class MyGame extends ApplicationAdapter {
 		Gdx.input.setCursorPosition(200, 200);
 	}
 	public void render () {
-		Gdx.gl.glClearColor(0.1f, 0.1f, 0.6f, 1);
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		gsm.update(Gdx.graphics.getDeltaTime(),camera);
@@ -33,9 +33,10 @@ public class MyGame extends ApplicationAdapter {
 		gsm.draw(batch,camera);
 		batch.end();
 		
-		//s.setProjectionMatrix(camera.combined);
-		//s.begin(ShapeType.Filled);
-		//s.end();
+		/*s.setProjectionMatrix(camera.combined);
+		s.begin(ShapeType.Filled);
+		s.rect(73,-68,114,126);
+		s.end();*/
 		
 		
 	}

@@ -32,6 +32,10 @@ public class HouseState implements State{
 	private String message;
 	private BitmapFont fonte;
 	private Vector2 textPos;
+	private Texture circle;
+	private float circleSize;
+	private Vector2 circlePos;
+	private int transition;
 	
 	public HouseState(Player player){
 		this.player = player;
@@ -54,6 +58,7 @@ public class HouseState implements State{
 		temp = new Texture("icons/cursor_attack.png");
 		cursor[ATTACK][0] = new TextureRegion(temp,0,0,32,32);
 		fonte = new BitmapFont(Gdx.files.internal("font/fonte.fnt"),false);
+		circle = new Texture("GUI/transition.png");
 		
 		init();
 	}
@@ -78,8 +83,9 @@ public class HouseState implements State{
 		object_areas[0][6] = new Rectangle(200,-126,68,203);
 		object_areas[0][7] = new Rectangle(366,31,31,46);
 		object_areas[0][8] = new Rectangle(722,-198,45,250);
+		
 		object_areas[1][0] = new Rectangle(-26,-124,70,201);
-		object_areas[1][1] = new Rectangle(-71,-68,114,126);
+		object_areas[1][1] = new Rectangle(70,-68,114,126);
 		object_areas[1][2] = new Rectangle(248,64,41,30);
 		object_areas[1][3] = new Rectangle(-368,-194,46,247);
 		//SETTING THE OBJECT NAMES
@@ -92,11 +98,13 @@ public class HouseState implements State{
 		object_names[0][6] = "door1";
 		object_names[0][7] = "lamp";
 		object_names[0][8] = "door2";
-		object_names[1][0] = "door1";
+		
+		object_names[1][0] = "door3";
 		object_names[1][1] = "frame";
 		object_names[1][2] = "allangay";
-		object_names[1][3] = "door2";
+		object_names[1][3] = "door4";
 		
+		transition = 0;
 		currentRoom = 0;
 		cursorState = 0;
 		mPress = false;
@@ -104,6 +112,8 @@ public class HouseState implements State{
 		
 		mousePosition = new Vector2(0, 0);
 		textPos = new Vector2(0,0);
+		circlePos = new Vector2(0,0);
+		circleSize = 0;
 		
 		lookingAt = null;
 		message = null;
@@ -141,10 +151,10 @@ public class HouseState implements State{
 			if(object_areas[currentRoom][obj].overlaps(new Rectangle(mousePosition.x,mousePosition.y,32,32))){
 				double distance = Math.sqrt(Math.pow(object_areas[currentRoom][obj].x - player.getPosition().x,2)+Math.pow(object_areas[currentRoom][obj].y - player.getPosition().y,2));
 				String temp = object_names[currentRoom][obj];
+				lookingAt = temp;
 				if(distance<=260 || temp.equals("rock")){
-					if(temp.equals("rock")||temp.contains("window")||temp.equals("hole")||temp.equals("door2")||temp.equals("lamp")||temp.equals("")){
+					if(!temp.equals("door1")&&!temp.equals("door3")){
 						cursorState = EXAMINE;
-						lookingAt = temp;
 					}
 				}
 			}
@@ -153,7 +163,7 @@ public class HouseState implements State{
 		if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT))
 			mPress = false;
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)&&!mPress){
-			if(lookingAt!=null){
+			if(cursorState == EXAMINE){
 				if(lookingAt.equals("rock"))
 					message = "A pile of rocks. What happened?";
 				if(lookingAt.equals("window1")||lookingAt.equals("window2"))
@@ -166,7 +176,16 @@ public class HouseState implements State{
 					message = "Can't see anything outside, too dark.";
 				if(lookingAt.equals("door2"))
 					message = "It's locked... The keyhole is shaped like a flower.";
+				if(lookingAt.equals("door4"))
+					message = "Locked. Fuck this house.";
+				if(lookingAt.equals("frame"))
+					message = "A paiting of a hore. A pretty one tough.";
 				textTimer = 500;
+				
+			}
+			else if(lookingAt != null){
+				if(lookingAt.equals("door1")||lookingAt.equals("door"))
+					transition = 1;
 			}
 			mPress = true;
 		}
@@ -177,6 +196,22 @@ public class HouseState implements State{
 			if(textTimer<=0){
 				textTimer = 0;
 				message = null;
+			}
+		}
+		if(transition!=0){
+			circlePos.x = camera.position.x-circleSize/2;
+			circlePos.y = camera.position.y-circleSize/2;
+			circleSize+=delta*transition*800;
+			if(circleSize<=0)
+				circleSize = 0;
+			if(transition==1 && circleSize>1300){
+				transition = -1;
+				currentRoom = (currentRoom==0)?1:0;
+				player.setPosition((currentRoom==0)?30:60,-160);
+			}
+			if(transition==-1 && circleSize<15){
+				transition = 0;
+				circleSize = 0;
 			}
 		}
 		if(!Gdx.input.isButtonPressed(Input.Buttons.RIGHT) && wPress)
@@ -199,6 +234,8 @@ public class HouseState implements State{
 		if(message!=null)
 			fonte.draw(batch,message, textPos.x, textPos.y);
 		batch.draw(cursor[cursorState][(mPress)?((cursor[cursorState].length==2)?1:0):0],mousePosition.x,mousePosition.y);
+		if(transition!=0)
+			batch.draw(circle,circlePos.x,circlePos.y,circleSize,circleSize);
 	}
 
 

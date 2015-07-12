@@ -20,6 +20,7 @@ public class Player implements Actor{
 	private TextureRegion idle[];
 	private Animation walk[];
 	
+	
 	public Player(){
 		Texture temp = new Texture("char/idle.png");
 		idle = new TextureRegion[8];
@@ -96,7 +97,6 @@ public class Player implements Actor{
 				walk[direction].stop();
 				action = IDLE;
 				destination = null;
-				System.out.println("Got there");
 			}
 		
 		}
